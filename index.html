@@ -96,6 +96,18 @@
     text-transform: none; letter-spacing: 0; font-weight: 600; margin-top: 4px; align-self: flex-start;
   }
 
+  .type-tools { display: flex; align-items: center; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+  .btn-type-add {
+    background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;
+    border-radius: 9px; padding: 7px 13px; font: inherit; font-size: 0.78rem; font-weight: 800;
+    cursor: pointer; text-transform: none; letter-spacing: 0; transition: background .15s;
+  }
+  .btn-type-add:hover { background: #d1fae5; }
+  .type-manage {
+    font-size: 0.66rem; color: #6366f1; cursor: pointer; text-decoration: underline;
+    text-transform: none; letter-spacing: 0; font-weight: 600;
+  }
+
   /* Add-device button + build label */
   .build-label {
     font-size: 0.74rem; color: #6b7280; margin-top: 14px;
@@ -211,6 +223,10 @@
       <label style="grid-column: 1 / -1;">
         <span id="typeLabel">Configuration</span>
         <div class="seg" id="typeSeg"></div>
+        <div class="type-tools">
+          <button type="button" class="btn-type-add" id="typeAdd">➕ Add model</button>
+          <span class="type-manage" id="typeManage" style="display:none;"></span>
+        </div>
       </label>
 
       <label>RAM <select id="ram"></select></label>
@@ -303,6 +319,7 @@ const SPEC = {
 
 const VENDOR_KEY = 'vendor_hd_portal_vendors_v1';
 const CPU_KEY    = 'vendor_hd_portal_cpus_v1';
+const TYPE_KEY   = 'vendor_hd_portal_types_v1';
 const state = { computer: 'Mac', type: 'Regular' };   // current configurator
 let lineItems = [];                                    // the request (cart)
 const $ = (id) => document.getElementById(id);
@@ -354,6 +371,58 @@ function cpuManageRemove() {
   if (idx >= 0 && idx < arr.length) { const r = arr.splice(idx, 1)[0]; saveCpus(all); rebuildCpuList(); toast('Removed ' + r); }
 }
 
+// ── Custom device models / series (persisted per platform) ──────────────────
+function loadTypes() {
+  try { const raw = localStorage.getItem(TYPE_KEY); if (raw) return JSON.parse(raw); } catch (_) {}
+  return { Mac: [], ThinkPad: [] };
+}
+function saveTypes(obj) { try { localStorage.setItem(TYPE_KEY, JSON.stringify(obj)); } catch (_) {} }
+
+// Built-in types (from SPEC) + the user's saved custom models, in order.
+function getPlatformTypes(computer) {
+  const platform = SPEC[computer];
+  const builtin = Object.keys(platform.types).map((name) => ({ name, rule: platform.types[name] }));
+  const customs = (loadTypes()[computer] || []).map((t) => ({
+    name: t.name,
+    rule: { ram: t.ram || [16, 32, 64], ramDefault: t.ramDefault || 16, cpu: t.cpu || platform.cpuSuggestions[0] },
+    custom: true,
+  }));
+  return builtin.concat(customs);
+}
+function getRule(computer, typeName) {
+  const f = getPlatformTypes(computer).find((t) => t.name === typeName);
+  return f ? f.rule : null;
+}
+
+function addTypePrompt() {
+  const label = SPEC[state.computer].typeLabel.toLowerCase();
+  const name = prompt('New ' + label + ' for ' + state.computer + ':\n(e.g. "X Series", "MacBook Air", "P16")');
+  if (!name || !name.trim()) return;
+  const nm = name.trim();
+  if (getPlatformTypes(state.computer).some((t) => t.name.toLowerCase() === nm.toLowerCase())) {
+    toast('“' + nm + '” already exists'); return;
+  }
+  const all = loadTypes(); const arr = all[state.computer] || (all[state.computer] = []);
+  arr.push({ name: nm, ram: [16, 32, 64], ramDefault: 16, cpu: SPEC[state.computer].cpuSuggestions[0] });
+  saveTypes(all);
+  state.type = nm;
+  buildTypeSeg(); applyRules();
+  toast('Added model “' + nm + '” — tweak its RAM/CPU, then add to the request');
+}
+
+function typeManageRemove() {
+  const all = loadTypes(); const arr = all[state.computer] || [];
+  if (!arr.length) return;
+  const labels = arr.map((t, i) => (i + 1) + '. ' + t.name).join('\n');
+  const pick = prompt('Remove which added model for ' + state.computer + '?\nEnter its number:\n\n' + labels);
+  const idx = parseInt(pick, 10) - 1;
+  if (idx >= 0 && idx < arr.length) {
+    const r = arr.splice(idx, 1)[0]; saveTypes(all);
+    if (state.type === r.name) state.type = null;   // fall back to the first type
+    buildTypeSeg(); applyRules(); toast('Removed ' + r.name);
+  }
+}
+
 // ── Vendors ─────────────────────────────────────────────────────────────────
 function loadVendors() {
   try { const raw = localStorage.getItem(VENDOR_KEY); if (raw) return JSON.parse(raw); } catch (_) {}
@@ -383,21 +452,31 @@ function buildTypeSeg() {
   const platform = SPEC[state.computer];
   $('typeLabel').textContent = platform.typeLabel;
   const seg = $('typeSeg'); seg.innerHTML = '';
-  Object.keys(platform.types).forEach((t, i) => {
-    const b = document.createElement('button'); b.type = 'button'; b.dataset.type = t; b.textContent = t;
-    if ((state.type && state.type === t) || (!state.type && i === 0)) { b.classList.add('active'); state.type = t; }
+  const types = getPlatformTypes(state.computer);
+  types.forEach((t, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.type = t.name; b.textContent = t.name;
+    if ((state.type && state.type === t.name) || (!state.type && i === 0)) { b.classList.add('active'); state.type = t.name; }
     b.addEventListener('click', () => {
-      state.type = t;
+      state.type = t.name;
       seg.querySelectorAll('button').forEach((x) => x.classList.remove('active'));
       b.classList.add('active'); applyRules();
     });
     seg.appendChild(b);
   });
-  if (!platform.types[state.type]) { state.type = Object.keys(platform.types)[0]; seg.querySelector('button').classList.add('active'); }
+  if (!getRule(state.computer, state.type)) {
+    state.type = types[0].name;
+    const first = seg.querySelector('button'); if (first) first.classList.add('active');
+  }
+  // Manage-link for any custom models on this platform
+  const customs = (loadTypes()[state.computer] || []);
+  const mng = $('typeManage');
+  if (customs.length) { mng.style.display = 'inline-block'; mng.textContent = '⚙ Manage added models (' + customs.length + ')'; }
+  else { mng.style.display = 'none'; }
 }
 
 function applyRules() {
-  const platform = SPEC[state.computer], rule = platform.types[state.type];
+  const platform = SPEC[state.computer];
+  const rule = getRule(state.computer, state.type) || Object.values(platform.types)[0];
   const ramSel = $('ram'); ramSel.innerHTML = '';
   rule.ram.forEach((r) => {
     const o = document.createElement('option'); o.value = r; o.textContent = r + ' GB';
@@ -560,6 +639,8 @@ $('computerSeg').addEventListener('click', (e) => {
 ['notes', 'requester'].forEach((id) => $(id).addEventListener('input', updatePreview));
 $('cpuAdd').addEventListener('click', cpuAddCurrent);
 $('cpuManage').addEventListener('click', cpuManageRemove);
+$('typeAdd').addEventListener('click', addTypePrompt);
+$('typeManage').addEventListener('click', typeManageRemove);
 $('cpu').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); cpuAddCurrent(); } });
 $('addBtn').addEventListener('click', addDevice);
 $('vendorSelect').addEventListener('change', (e) => { if (e.target.value === '__manage__') manageRemove(); else updatePreview(); });
