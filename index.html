@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vendor HD Portal</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #eef1fb;
+    color: #1a1a2e;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 55%, #312e81 100%);
+    border-radius: 18px;
+    padding: 22px 26px;
+    display: flex; align-items: center; gap: 16px;
+    box-shadow: 0 14px 40px rgba(49,46,129,.28);
+    margin-bottom: 22px;
+  }
+  .logo {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(99,102,241,.4);
+  }
+  .header h1 { color: white; font-size: 1.35rem; font-weight: 800; letter-spacing: -.4px; }
+  .header h1 span { color: #a78bfa; }
+  .header p { color: #94a3b8; font-size: 0.8rem; margin-top: 3px; }
+
+  /* Cards */
+  .card {
+    background: white; border-radius: 16px;
+    border: 1px solid #e0e7ff;
+    padding: 20px 22px; margin-bottom: 18px;
+    box-shadow: 0 4px 16px rgba(99,102,241,.06);
+  }
+  .card h2 {
+    font-size: 0.95rem; font-weight: 800; color: #4338ca;
+    display: flex; align-items: center; gap: 9px; margin-bottom: 16px;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg,#6366f1,#4f46e5); color: white;
+    font-size: 0.78rem; font-weight: 800;
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+
+  /* Form */
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 540px) { .grid { grid-template-columns: 1fr; } }
+
+  label {
+    font-size: 0.7rem; font-weight: 700; color: #4338ca;
+    text-transform: uppercase; letter-spacing: .5px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  input, select {
+    font: inherit; font-size: 0.9rem; color: #1a1a2e;
+    background: #f4f5fb; border: 1px solid #e0e7ff;
+    border-radius: 10px; padding: 10px 12px; width: 100%;
+    transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  input:focus, select:focus {
+    outline: none; background: white;
+    border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.15);
+  }
+  input:read-only {
+    background: #eef2ff; color: #4f46e5; font-weight: 700; cursor: default;
+  }
+  input::placeholder { color: #9ca3af; font-weight: 400; }
+
+  /* Segmented toggle */
+  .seg { display: flex; gap: 8px; }
+  .seg button {
+    flex: 1; background: white; border: 1px solid #e0e7ff;
+    border-radius: 10px; padding: 11px 8px; font: inherit; font-size: 0.86rem;
+    font-weight: 700; cursor: pointer; color: #4f46e5; transition: all .15s;
+  }
+  .seg button.active { background: linear-gradient(135deg,#6366f1,#4f46e5); color: white; border-color: transparent; box-shadow: 0 5px 14px rgba(99,102,241,.3); }
+  .seg button:hover:not(.active) { background: #eef2ff; }
+
+  .hint { font-size: 0.68rem; color: #9ca3af; font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+  /* Vendor row */
+  .vendor-row { display: flex; gap: 10px; align-items: flex-end; }
+  .vendor-row > label { flex: 1; }
+  .btn-sm {
+    background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe;
+    border-radius: 10px; padding: 10px 14px; font: inherit; font-size: 0.82rem;
+    font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .15s;
+  }
+  .btn-sm:hover { background: #e0e7ff; }
+
+  .new-vendor {
+    margin-top: 14px; padding: 14px; border-radius: 12px;
+    background: #f8f9ff; border: 1px dashed #c7d2fe;
+    display: none; flex-direction: column; gap: 12px;
+  }
+  .new-vendor.open { display: flex; }
+  .nv-actions { display: flex; gap: 8px; }
+
+  /* Preview */
+  .preview {
+    background: #1a1a2e; border-radius: 12px; padding: 16px 18px;
+    color: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
+    max-height: 320px; overflow-y: auto;
+  }
+  .preview .pv-to { color: #a78bfa; }
+  .preview .pv-subj { color: #fcd34d; }
+
+  /* Send actions */
+  .actions { display: flex; gap: 12px; margin-top: 18px; }
+  .btn {
+    font: inherit; font-size: 0.92rem; font-weight: 800; border: none;
+    border-radius: 12px; padding: 14px; cursor: pointer; flex: 1;
+    transition: transform .1s, box-shadow .15s, background .15s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg,#6366f1,#4f46e5); color: white;
+    box-shadow: 0 8px 20px rgba(99,102,241,.32);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(99,102,241,.42); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-ghost { background: white; color: #4f46e5; border: 1px solid #c7d2fe; flex: 0 0 auto; padding: 14px 18px; }
+  .btn-ghost:hover { background: #eef2ff; }
+
+  .err { color: #ef4444; font-size: 0.78rem; min-height: 1em; margin-top: 6px; font-weight: 600; }
+  .ok  { color: #16a34a; font-size: 0.78rem; min-height: 1em; margin-top: 6px; font-weight: 600; }
+
+  .watermark {
+    text-align: center; font-size: 0.68rem; color: #a5b4fc;
+    margin-top: 8px; letter-spacing: .3px; user-select: none;
+  }
+  .watermark sup { font-size: 0.55rem; }
+
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    background: #1a1a2e; color: white; font-size: 0.84rem; font-weight: 600;
+    padding: 11px 18px; border-radius: 22px; opacity: 0;
+    transition: opacity .2s, transform .2s; pointer-events: none; z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <div class="logo">💻</div>
+    <div>
+      <h1>Vendor <span>HD Portal</span></h1>
+      <p>Help Desk equipment requests — build a spec, pick a vendor, send the email.</p>
+    </div>
+  </div>
+
+  <!-- ── 1. Equipment ───────────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="step-num">1</span> Equipment</h2>
+
+    <div class="grid">
+      <label style="grid-column: 1 / -1;">
+        Computer type
+        <div class="seg" id="computerSeg">
+          <button type="button" data-computer="Mac" class="active">🍎 Mac</button>
+          <button type="button" data-computer="ThinkPad">⬛ ThinkPad</button>
+        </div>
+      </label>
+
+      <label style="grid-column: 1 / -1;">
+        <span id="typeLabel">Configuration</span>
+        <div class="seg" id="typeSeg"><!-- options injected by JS --></div>
+      </label>
+
+      <label>
+        RAM
+        <select id="ram"></select>
+      </label>
+
+      <label>
+        CPU
+        <input id="cpu" list="cpuList" autocomplete="off"/>
+        <datalist id="cpuList"></datalist>
+      </label>
+
+      <label>
+        SSD
+        <input id="ssd" readonly/>
+      </label>
+
+      <label>
+        Quantity
+        <input id="qty" type="number" min="1" max="500" value="1"/>
+      </label>
+
+      <label style="grid-column: 1 / -1;">
+        Notes <span class="hint">(optional — e.g. accessories, urgency, asset tags)</span>
+        <input id="notes" type="text" placeholder="Anything else the vendor should know"/>
+      </label>
+
+      <label style="grid-column: 1 / -1;">
+        Requested by <span class="hint">(optional — signs the email)</span>
+        <input id="requester" type="text" placeholder="Your name"/>
+      </label>
+    </div>
+  </div>
+
+  <!-- ── 2. Vendor ──────────────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="step-num">2</span> Vendor</h2>
+
+    <div class="vendor-row">
+      <label>
+        Send to
+        <select id="vendorSelect"></select>
+      </label>
+      <button type="button" class="btn-sm" id="addVendorBtn">+ New vendor</button>
+    </div>
+
+    <div class="new-vendor" id="newVendor">
+      <div class="grid">
+        <label>
+          Company name
+          <input id="nvName" type="text" placeholder="e.g. Dell Israel"/>
+        </label>
+        <label>
+          Email
+          <input id="nvEmail" type="email" placeholder="sales@vendor.com" autocomplete="off"/>
+        </label>
+      </div>
+      <div class="err" id="nvErr"></div>
+      <div class="nv-actions">
+        <button type="button" class="btn-sm" id="nvCancel">Cancel</button>
+        <button type="button" class="btn-sm" id="nvSave" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border-color:transparent;">Save vendor</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. Review & Send ───────────────────────────────────────── -->
+  <div class="card">
+    <h2><span class="step-num">3</span> Review &amp; send</h2>
+    <div class="preview" id="preview"></div>
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="sendBtn">📧 Open email</button>
+      <button type="button" class="btn btn-ghost" id="copyBtn">Copy text</button>
+    </div>
+    <div class="ok" id="status"></div>
+  </div>
+
+  <div class="watermark">Created by Almog Lisbona<sup>&trade;</sup> · Global-e Help Desk</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// ── Spec rules ────────────────────────────────────────────────────────────
+const SPEC = {
+  Mac: {
+    typeLabel: 'Configuration',
+    ssd: '512 GB',
+    cpuSuggestions: ['M5', 'M5 Pro', 'M5 Max', 'M4 Pro', 'M4 Max'],
+    types: {
+      'Regular':   { ram: [16, 32, 64],  ramDefault: 16, cpu: 'M5' },
+      'Developer': { ram: [24, 32, 64],  ramDefault: 24, cpu: 'M5 Pro' },
+    },
+  },
+  ThinkPad: {
+    typeLabel: 'Series',
+    ssd: '1 TB',
+    cpuSuggestions: ['i7 Ultra', 'Intel Core Ultra 7', 'Intel Core Ultra 9'],
+    types: {
+      'T Series': { ram: [16, 32, 64], ramDefault: 16, cpu: 'i7 Ultra' },
+      'P Series': { ram: [16, 32, 64], ramDefault: 16, cpu: 'i7 Ultra' },
+    },
+  },
+};
+
+const VENDOR_KEY = 'vendor_hd_portal_vendors_v1';
+
+const state = { computer: 'Mac', type: 'Regular' };
+
+const $ = (id) => document.getElementById(id);
+
+// ── Vendors (localStorage) ──────────────────────────────────────────────────
+function loadVendors() {
+  try {
+    const raw = localStorage.getItem(VENDOR_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (_) {}
+  // Seed with editable examples on first run
+  const seed = [
+    { name: 'Example Vendor A (edit me)', email: 'sales@vendor-a.com' },
+    { name: 'Example Vendor B (edit me)', email: 'orders@vendor-b.com' },
+  ];
+  saveVendors(seed);
+  return seed;
+}
+function saveVendors(list) {
+  try { localStorage.setItem(VENDOR_KEY, JSON.stringify(list)); } catch (_) {}
+}
+
+function renderVendors(selectEmail) {
+  const list = loadVendors();
+  const sel  = $('vendorSelect');
+  sel.innerHTML = '';
+  if (!list.length) {
+    const o = document.createElement('option');
+    o.value = ''; o.textContent = '— no vendors yet, add one →';
+    sel.appendChild(o);
+  }
+  list.forEach((v) => {
+    const o = document.createElement('option');
+    o.value = v.email;
+    o.textContent = v.name + '  ·  ' + v.email;
+    sel.appendChild(o);
+  });
+  // Allow deleting a vendor
+  const del = document.createElement('option');
+  del.value = '__manage__';
+  del.textContent = '⚙ Remove a vendor…';
+  sel.appendChild(del);
+
+  if (selectEmail) sel.value = selectEmail;
+  updatePreview();
+}
+
+// ── Build the form per the rules ────────────────────────────────────────────
+function buildTypeSeg() {
+  const platform = SPEC[state.computer];
+  $('typeLabel').textContent = platform.typeLabel;
+  const seg = $('typeSeg');
+  seg.innerHTML = '';
+  Object.keys(platform.types).forEach((t, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.type = t;
+    b.textContent = t;
+    if ((state.type && state.type === t) || (!state.type && i === 0)) {
+      b.classList.add('active');
+      state.type = t;
+    }
+    b.addEventListener('click', () => {
+      state.type = t;
+      seg.querySelectorAll('button').forEach((x) => x.classList.remove('active'));
+      b.classList.add('active');
+      applyRules();
+    });
+    seg.appendChild(b);
+  });
+  // Ensure state.type is valid for this platform
+  if (!platform.types[state.type]) {
+    state.type = Object.keys(platform.types)[0];
+    seg.querySelector('button').classList.add('active');
+  }
+}
+
+function applyRules() {
+  const platform = SPEC[state.computer];
+  const rule     = platform.types[state.type];
+
+  // RAM options
+  const ramSel = $('ram');
+  ramSel.innerHTML = '';
+  rule.ram.forEach((r) => {
+    const o = document.createElement('option');
+    o.value = r; o.textContent = r + ' GB';
+    if (r === rule.ramDefault) o.selected = true;
+    ramSel.appendChild(o);
+  });
+
+  // CPU default + suggestions
+  $('cpu').value = rule.cpu;
+  const dl = $('cpuList');
+  dl.innerHTML = '';
+  platform.cpuSuggestions.forEach((c) => {
+    const o = document.createElement('option');
+    o.value = c;
+    dl.appendChild(o);
+  });
+
+  // SSD locked per platform
+  $('ssd').value = platform.ssd;
+
+  updatePreview();
+}
+
+// ── Email building ──────────────────────────────────────────────────────────
+function selectedVendor() {
+  const sel  = $('vendorSelect');
+  const email = sel.value;
+  if (!email || email === '__manage__') return null;
+  const list = loadVendors();
+  return list.find((v) => v.email === email) || { name: email, email };
+}
+
+function buildEmail() {
+  const v        = selectedVendor();
+  const device   = state.computer + ' — ' + state.type;
+  const qty      = Math.max(1, parseInt($('qty').value, 10) || 1);
+  const cpu      = $('cpu').value.trim() || '(unspecified)';
+  const ram      = $('ram').value + ' GB';
+  const ssd      = $('ssd').value;
+  const notes    = $('notes').value.trim();
+  const reqBy    = $('requester').value.trim();
+  const company  = v ? v.name.replace(/\s*\(edit me\)\s*$/i, '') : 'there';
+
+  const subject = 'Equipment Request — ' + device + (qty > 1 ? ' ×' + qty : '');
+
+  const pad = (s) => (s + '            ').slice(0, 12);
+  const lines = [
+    'Hello ' + company + ',',
+    '',
+    'The Global-e Help Desk team would like to request the following equipment:',
+    '',
+    '  ' + pad('Device')   + ': ' + device,
+    '  ' + pad('Quantity') + ': ' + qty,
+    '  ' + pad('CPU')      + ': ' + cpu,
+    '  ' + pad('RAM')      + ': ' + ram,
+    '  ' + pad('SSD')      + ': ' + ssd,
+  ];
+  if (notes) { lines.push('', 'Notes: ' + notes); }
+  lines.push(
+    '',
+    'Please reply with availability, unit pricing, and estimated lead time.',
+    '',
+    'Thank you,',
+    (reqBy || 'Help Desk Team'),
+    'Global-e Help Desk'
+  );
+
+  return { to: v ? v.email : '', subject, body: lines.join('\r\n') };
+}
+
+function updatePreview() {
+  const { to, subject, body } = buildEmail();
+  const pv = $('preview');
+  pv.innerHTML =
+    '<span class="pv-to">To:      </span>' + escapeHtml(to || '(choose a vendor)') + '\n' +
+    '<span class="pv-subj">Subject: </span>' + escapeHtml(subject) + '\n' +
+    '─────────────────────────────────────\n' +
+    escapeHtml(body);
+
+  const ready = !!to;
+  $('sendBtn').disabled = !ready;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// ── Send / copy ───────────────────────────────────────────────────────────
+function sendEmail() {
+  const { to, subject, body } = buildEmail();
+  if (!to) { toast('Pick a vendor first'); return; }
+  const url = 'mailto:' + encodeURIComponent(to) +
+              '?subject=' + encodeURIComponent(subject) +
+              '&body=' + encodeURIComponent(body);
+  window.location.href = url;
+  status('Opening your mail client for ' + to + ' …');
+}
+
+function copyEmail() {
+  const { to, subject, body } = buildEmail();
+  const text = 'To: ' + to + '\nSubject: ' + subject + '\n\n' + body;
+  navigator.clipboard.writeText(text)
+    .then(() => toast('Email text copied'))
+    .catch(() => toast('Copy failed — select the preview manually'));
+}
+
+// ── New-vendor flow ─────────────────────────────────────────────────────────
+function openNewVendor()  { $('newVendor').classList.add('open');  $('nvName').focus(); }
+function closeNewVendor() { $('newVendor').classList.remove('open'); $('nvName').value=''; $('nvEmail').value=''; $('nvErr').textContent=''; }
+
+function saveNewVendor() {
+  const name  = $('nvName').value.trim();
+  const email = $('nvEmail').value.trim();
+  if (!name)  { $('nvErr').textContent = 'Company name is required.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    $('nvErr').textContent = 'Enter a valid email (name@domain.com).'; return;
+  }
+  const list = loadVendors();
+  if (list.some((v) => v.email.toLowerCase() === email.toLowerCase())) {
+    $('nvErr').textContent = 'A vendor with that email already exists.'; return;
+  }
+  list.push({ name, email });
+  saveVendors(list);
+  closeNewVendor();
+  renderVendors(email);          // select the newly-added vendor
+  toast('Vendor saved');
+}
+
+function manageRemove() {
+  const list = loadVendors();
+  if (!list.length) { renderVendors(); return; }
+  const labels = list.map((v, i) => (i + 1) + '. ' + v.name + ' (' + v.email + ')').join('\n');
+  const pick = prompt('Remove which vendor? Enter its number:\n\n' + labels);
+  const idx  = parseInt(pick, 10) - 1;
+  if (idx >= 0 && idx < list.length) {
+    const removed = list.splice(idx, 1)[0];
+    saveVendors(list);
+    toast('Removed ' + removed.name);
+  }
+  renderVendors();
+}
+
+// ── Toast / status ────────────────────────────────────────────────────────
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+function status(msg) { $('status').textContent = msg || ''; }
+
+// ── Wire up ─────────────────────────────────────────────────────────────────
+$('computerSeg').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-computer]');
+  if (!b) return;
+  state.computer = b.dataset.computer;
+  state.type = null; // reset; buildTypeSeg picks the first valid one
+  $('computerSeg').querySelectorAll('button').forEach((x) => x.classList.remove('active'));
+  b.classList.add('active');
+  buildTypeSeg();
+  applyRules();
+});
+
+['ram', 'cpu', 'qty', 'notes', 'requester'].forEach((id) =>
+  $(id).addEventListener('input', updatePreview));
+
+$('vendorSelect').addEventListener('change', (e) => {
+  if (e.target.value === '__manage__') { manageRemove(); return; }
+  updatePreview();
+});
+
+$('addVendorBtn').addEventListener('click', openNewVendor);
+$('nvCancel').addEventListener('click', closeNewVendor);
+$('nvSave').addEventListener('click', saveNewVendor);
+$('nvEmail').addEventListener('keydown', (e) => { if (e.key === 'Enter') saveNewVendor(); });
+$('sendBtn').addEventListener('click', sendEmail);
+$('copyBtn').addEventListener('click', copyEmail);
+
+// Init
+buildTypeSeg();
+applyRules();
+renderVendors();
+</script>
+</body>
+</html>
