@@ -15,24 +15,20 @@
     min-height: 100vh;
     padding: 24px 16px 48px;
   }
-
   .wrap { max-width: 760px; margin: 0 auto; }
 
   /* Header */
   .header {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 55%, #312e81 100%);
-    border-radius: 18px;
-    padding: 22px 26px;
+    border-radius: 18px; padding: 22px 26px;
     display: flex; align-items: center; gap: 16px;
-    box-shadow: 0 14px 40px rgba(49,46,129,.28);
-    margin-bottom: 22px;
+    box-shadow: 0 14px 40px rgba(49,46,129,.28); margin-bottom: 22px;
   }
   .logo {
     width: 52px; height: 52px; border-radius: 14px;
     background: linear-gradient(135deg, #6366f1, #a855f7);
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.4rem; flex-shrink: 0;
-    box-shadow: 0 8px 20px rgba(99,102,241,.4);
+    font-size: 1.4rem; flex-shrink: 0; box-shadow: 0 8px 20px rgba(99,102,241,.4);
   }
   .header h1 { color: white; font-size: 1.35rem; font-weight: 800; letter-spacing: -.4px; }
   .header h1 span { color: #a78bfa; }
@@ -40,10 +36,8 @@
 
   /* Cards */
   .card {
-    background: white; border-radius: 16px;
-    border: 1px solid #e0e7ff;
-    padding: 20px 22px; margin-bottom: 18px;
-    box-shadow: 0 4px 16px rgba(99,102,241,.06);
+    background: white; border-radius: 16px; border: 1px solid #e0e7ff;
+    padding: 20px 22px; margin-bottom: 18px; box-shadow: 0 4px 16px rgba(99,102,241,.06);
   }
   .card h2 {
     font-size: 0.95rem; font-weight: 800; color: #4338ca;
@@ -75,12 +69,9 @@
     outline: none; background: white;
     border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.15);
   }
-  input:read-only {
-    background: #eef2ff; color: #4f46e5; font-weight: 700; cursor: default;
-  }
+  input:read-only { background: #eef2ff; color: #4f46e5; font-weight: 700; cursor: default; }
   input::placeholder { color: #9ca3af; font-weight: 400; }
 
-  /* Segmented toggle */
   .seg { display: flex; gap: 8px; }
   .seg button {
     flex: 1; background: white; border: 1px solid #e0e7ff;
@@ -92,7 +83,41 @@
 
   .hint { font-size: 0.68rem; color: #9ca3af; font-weight: 500; text-transform: none; letter-spacing: 0; }
 
-  /* Vendor row */
+  /* Add-device button + build label */
+  .build-label {
+    font-size: 0.74rem; color: #6b7280; margin-top: 14px;
+    background: #f8f9ff; border: 1px solid #e0e7ff; border-radius: 9px; padding: 8px 11px;
+  }
+  .btn-add {
+    width: 100%; margin-top: 10px; background: linear-gradient(135deg,#10b981,#059669);
+    color: #fff; border: none; border-radius: 11px; padding: 13px; font: inherit;
+    font-size: 0.9rem; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(16,185,129,.28);
+    transition: transform .1s, box-shadow .15s;
+  }
+  .btn-add:hover { transform: translateY(-1px); box-shadow: 0 9px 22px rgba(16,185,129,.38); }
+
+  /* Cart (the request) */
+  .cart { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+  .cart-empty {
+    font-size: 0.82rem; color: #9ca3af; padding: 16px; text-align: center;
+    background: #f8f9ff; border: 1px dashed #c7d2fe; border-radius: 10px;
+  }
+  .cart-item {
+    display: flex; align-items: center; gap: 12px; padding: 11px 13px;
+    background: #f4f5fb; border: 1px solid #e0e7ff; border-radius: 10px;
+  }
+  .ci-main { flex: 1; }
+  .ci-main strong { font-size: 0.9rem; color: #1a1a2e; }
+  .ci-qty { color: #4f46e5; font-weight: 800; }
+  .ci-spec { font-size: 0.74rem; color: #6b7280; margin-top: 2px; }
+  .ci-remove {
+    background: #fee2e2; color: #dc2626; border: none; border-radius: 8px;
+    width: 30px; height: 30px; cursor: pointer; font-size: 0.85rem; font-weight: 800; flex-shrink: 0;
+  }
+  .ci-remove:hover { background: #fecaca; }
+  .cart-total { font-size: 0.8rem; color: #4338ca; font-weight: 800; text-align: right; margin-top: 4px; }
+
+  /* Vendor */
   .vendor-row { display: flex; gap: 10px; align-items: flex-end; }
   .vendor-row > label { flex: 1; }
   .btn-sm {
@@ -101,7 +126,6 @@
     font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .15s;
   }
   .btn-sm:hover { background: #e0e7ff; }
-
   .new-vendor {
     margin-top: 14px; padding: 14px; border-radius: 12px;
     background: #f8f9ff; border: 1px dashed #c7d2fe;
@@ -115,22 +139,18 @@
     background: #1a1a2e; border-radius: 12px; padding: 16px 18px;
     color: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 0.8rem; line-height: 1.6; white-space: pre-wrap; word-break: break-word;
-    max-height: 320px; overflow-y: auto;
+    max-height: 340px; overflow-y: auto;
   }
   .preview .pv-to { color: #a78bfa; }
   .preview .pv-subj { color: #fcd34d; }
 
-  /* Send actions */
   .actions { display: flex; gap: 12px; margin-top: 18px; }
   .btn {
     font: inherit; font-size: 0.92rem; font-weight: 800; border: none;
     border-radius: 12px; padding: 14px; cursor: pointer; flex: 1;
     transition: transform .1s, box-shadow .15s, background .15s;
   }
-  .btn-primary {
-    background: linear-gradient(135deg,#6366f1,#4f46e5); color: white;
-    box-shadow: 0 8px 20px rgba(99,102,241,.32);
-  }
+  .btn-primary { background: linear-gradient(135deg,#6366f1,#4f46e5); color: white; box-shadow: 0 8px 20px rgba(99,102,241,.32); }
   .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(99,102,241,.42); }
   .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
   .btn-ghost { background: white; color: #4f46e5; border: 1px solid #c7d2fe; flex: 0 0 auto; padding: 14px 18px; }
@@ -139,10 +159,7 @@
   .err { color: #ef4444; font-size: 0.78rem; min-height: 1em; margin-top: 6px; font-weight: 600; }
   .ok  { color: #16a34a; font-size: 0.78rem; min-height: 1em; margin-top: 6px; font-weight: 600; }
 
-  .watermark {
-    text-align: center; font-size: 0.68rem; color: #a5b4fc;
-    margin-top: 8px; letter-spacing: .3px; user-select: none;
-  }
+  .watermark { text-align: center; font-size: 0.68rem; color: #a5b4fc; margin-top: 8px; letter-spacing: .3px; user-select: none; }
   .watermark sup { font-size: 0.55rem; }
 
   .toast {
@@ -161,13 +178,13 @@
     <div class="logo">💻</div>
     <div>
       <h1>Vendor <span>HD Portal</span></h1>
-      <p>Help Desk equipment requests — build a spec, pick a vendor, send the email.</p>
+      <p>Build a request with one or more devices, pick a vendor, send the email.</p>
     </div>
   </div>
 
-  <!-- ── 1. Equipment ───────────────────────────────────────────── -->
+  <!-- ── 1. Add devices ─────────────────────────────────────────── -->
   <div class="card">
-    <h2><span class="step-num">1</span> Equipment</h2>
+    <h2><span class="step-num">1</span> Add devices to the request</h2>
 
     <div class="grid">
       <label style="grid-column: 1 / -1;">
@@ -180,64 +197,33 @@
 
       <label style="grid-column: 1 / -1;">
         <span id="typeLabel">Configuration</span>
-        <div class="seg" id="typeSeg"><!-- options injected by JS --></div>
+        <div class="seg" id="typeSeg"></div>
       </label>
 
-      <label>
-        RAM
-        <select id="ram"></select>
-      </label>
-
-      <label>
-        CPU
-        <input id="cpu" list="cpuList" autocomplete="off"/>
-        <datalist id="cpuList"></datalist>
-      </label>
-
-      <label>
-        SSD
-        <input id="ssd" readonly/>
-      </label>
-
-      <label>
-        Quantity
-        <input id="qty" type="number" min="1" max="500" value="1"/>
-      </label>
-
-      <label style="grid-column: 1 / -1;">
-        Notes <span class="hint">(optional — e.g. accessories, urgency, asset tags)</span>
-        <input id="notes" type="text" placeholder="Anything else the vendor should know"/>
-      </label>
-
-      <label style="grid-column: 1 / -1;">
-        Requested by <span class="hint">(optional — signs the email)</span>
-        <input id="requester" type="text" placeholder="Your name"/>
-      </label>
+      <label>RAM <select id="ram"></select></label>
+      <label>CPU <input id="cpu" list="cpuList" autocomplete="off"/><datalist id="cpuList"></datalist></label>
+      <label>SSD <input id="ssd" readonly/></label>
+      <label>Quantity <input id="qty" type="number" min="1" max="500" value="1"/></label>
     </div>
+
+    <div class="build-label" id="buildLabel"></div>
+    <button type="button" class="btn-add" id="addBtn">➕ Add this device to the request</button>
+
+    <div class="cart" id="cart"></div>
+    <div class="cart-total" id="cartTotal"></div>
   </div>
 
   <!-- ── 2. Vendor ──────────────────────────────────────────────── -->
   <div class="card">
     <h2><span class="step-num">2</span> Vendor</h2>
-
     <div class="vendor-row">
-      <label>
-        Send to
-        <select id="vendorSelect"></select>
-      </label>
+      <label>Send to <select id="vendorSelect"></select></label>
       <button type="button" class="btn-sm" id="addVendorBtn">+ New vendor</button>
     </div>
-
     <div class="new-vendor" id="newVendor">
       <div class="grid">
-        <label>
-          Company name
-          <input id="nvName" type="text" placeholder="e.g. Dell Israel"/>
-        </label>
-        <label>
-          Email
-          <input id="nvEmail" type="email" placeholder="sales@vendor.com" autocomplete="off"/>
-        </label>
+        <label>Company name <input id="nvName" type="text" placeholder="e.g. Dell Israel"/></label>
+        <label>Email <input id="nvEmail" type="email" placeholder="sales@vendor.com" autocomplete="off"/></label>
       </div>
       <div class="err" id="nvErr"></div>
       <div class="nv-actions">
@@ -247,9 +233,19 @@
     </div>
   </div>
 
-  <!-- ── 3. Review & Send ───────────────────────────────────────── -->
+  <!-- ── 3. Review & send ───────────────────────────────────────── -->
   <div class="card">
     <h2><span class="step-num">3</span> Review &amp; send</h2>
+    <div class="grid" style="margin-bottom:16px;">
+      <label style="grid-column: 1 / -1;">
+        Notes <span class="hint">(optional — accessories, urgency, asset tags)</span>
+        <input id="notes" type="text" placeholder="Anything else the vendor should know"/>
+      </label>
+      <label style="grid-column: 1 / -1;">
+        Requested by <span class="hint">(optional — signs the email)</span>
+        <input id="requester" type="text" placeholder="Your name"/>
+      </label>
+    </div>
     <div class="preview" id="preview"></div>
     <div class="actions">
       <button type="button" class="btn btn-primary" id="sendBtn">📧 Open email</button>
@@ -266,20 +262,17 @@
 <script>
 'use strict';
 
-// ── Spec rules ────────────────────────────────────────────────────────────
 const SPEC = {
   Mac: {
-    typeLabel: 'Configuration',
-    ssd: '512 GB',
+    typeLabel: 'Configuration', ssd: '512 GB',
     cpuSuggestions: ['M5', 'M5 Pro', 'M5 Max', 'M4 Pro', 'M4 Max'],
     types: {
-      'Regular':   { ram: [16, 32, 64],  ramDefault: 16, cpu: 'M5' },
-      'Developer': { ram: [24, 32, 64],  ramDefault: 24, cpu: 'M5 Pro' },
+      'Regular':   { ram: [16, 32, 64], ramDefault: 16, cpu: 'M5' },
+      'Developer': { ram: [24, 32, 64], ramDefault: 24, cpu: 'M5 Pro' },
     },
   },
   ThinkPad: {
-    typeLabel: 'Series',
-    ssd: '1 TB',
+    typeLabel: 'Series', ssd: '1 TB',
     cpuSuggestions: ['i7 Ultra', 'Intel Core Ultra 7', 'Intel Core Ultra 9'],
     types: {
       'T Series': { ram: [16, 32, 64], ramDefault: 16, cpu: 'i7 Ultra' },
@@ -289,157 +282,145 @@ const SPEC = {
 };
 
 const VENDOR_KEY = 'vendor_hd_portal_vendors_v1';
-
-const state = { computer: 'Mac', type: 'Regular' };
-
+const state = { computer: 'Mac', type: 'Regular' };   // current configurator
+let lineItems = [];                                    // the request (cart)
 const $ = (id) => document.getElementById(id);
 
-// ── Vendors (localStorage) ──────────────────────────────────────────────────
+// ── Vendors ─────────────────────────────────────────────────────────────────
 function loadVendors() {
-  try {
-    const raw = localStorage.getItem(VENDOR_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (_) {}
-  // Seed with editable examples on first run
+  try { const raw = localStorage.getItem(VENDOR_KEY); if (raw) return JSON.parse(raw); } catch (_) {}
   const seed = [
     { name: 'Example Vendor A (edit me)', email: 'sales@vendor-a.com' },
     { name: 'Example Vendor B (edit me)', email: 'orders@vendor-b.com' },
   ];
-  saveVendors(seed);
-  return seed;
+  saveVendors(seed); return seed;
 }
-function saveVendors(list) {
-  try { localStorage.setItem(VENDOR_KEY, JSON.stringify(list)); } catch (_) {}
-}
+function saveVendors(list) { try { localStorage.setItem(VENDOR_KEY, JSON.stringify(list)); } catch (_) {} }
 
 function renderVendors(selectEmail) {
-  const list = loadVendors();
-  const sel  = $('vendorSelect');
-  sel.innerHTML = '';
+  const list = loadVendors(); const sel = $('vendorSelect'); sel.innerHTML = '';
   if (!list.length) {
-    const o = document.createElement('option');
-    o.value = ''; o.textContent = '— no vendors yet, add one →';
-    sel.appendChild(o);
+    const o = document.createElement('option'); o.value = ''; o.textContent = '— no vendors yet, add one →'; sel.appendChild(o);
   }
   list.forEach((v) => {
-    const o = document.createElement('option');
-    o.value = v.email;
-    o.textContent = v.name + '  ·  ' + v.email;
-    sel.appendChild(o);
+    const o = document.createElement('option'); o.value = v.email; o.textContent = v.name + '  ·  ' + v.email; sel.appendChild(o);
   });
-  // Allow deleting a vendor
-  const del = document.createElement('option');
-  del.value = '__manage__';
-  del.textContent = '⚙ Remove a vendor…';
-  sel.appendChild(del);
-
+  const del = document.createElement('option'); del.value = '__manage__'; del.textContent = '⚙ Remove a vendor…'; sel.appendChild(del);
   if (selectEmail) sel.value = selectEmail;
   updatePreview();
 }
 
-// ── Build the form per the rules ────────────────────────────────────────────
+// ── Configurator ──────────────────────────────────────────────────────────
 function buildTypeSeg() {
   const platform = SPEC[state.computer];
   $('typeLabel').textContent = platform.typeLabel;
-  const seg = $('typeSeg');
-  seg.innerHTML = '';
+  const seg = $('typeSeg'); seg.innerHTML = '';
   Object.keys(platform.types).forEach((t, i) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.dataset.type = t;
-    b.textContent = t;
-    if ((state.type && state.type === t) || (!state.type && i === 0)) {
-      b.classList.add('active');
-      state.type = t;
-    }
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.type = t; b.textContent = t;
+    if ((state.type && state.type === t) || (!state.type && i === 0)) { b.classList.add('active'); state.type = t; }
     b.addEventListener('click', () => {
       state.type = t;
       seg.querySelectorAll('button').forEach((x) => x.classList.remove('active'));
-      b.classList.add('active');
-      applyRules();
+      b.classList.add('active'); applyRules();
     });
     seg.appendChild(b);
   });
-  // Ensure state.type is valid for this platform
-  if (!platform.types[state.type]) {
-    state.type = Object.keys(platform.types)[0];
-    seg.querySelector('button').classList.add('active');
-  }
+  if (!platform.types[state.type]) { state.type = Object.keys(platform.types)[0]; seg.querySelector('button').classList.add('active'); }
 }
 
 function applyRules() {
-  const platform = SPEC[state.computer];
-  const rule     = platform.types[state.type];
-
-  // RAM options
-  const ramSel = $('ram');
-  ramSel.innerHTML = '';
+  const platform = SPEC[state.computer], rule = platform.types[state.type];
+  const ramSel = $('ram'); ramSel.innerHTML = '';
   rule.ram.forEach((r) => {
-    const o = document.createElement('option');
-    o.value = r; o.textContent = r + ' GB';
-    if (r === rule.ramDefault) o.selected = true;
-    ramSel.appendChild(o);
+    const o = document.createElement('option'); o.value = r; o.textContent = r + ' GB';
+    if (r === rule.ramDefault) o.selected = true; ramSel.appendChild(o);
   });
-
-  // CPU default + suggestions
   $('cpu').value = rule.cpu;
-  const dl = $('cpuList');
-  dl.innerHTML = '';
-  platform.cpuSuggestions.forEach((c) => {
-    const o = document.createElement('option');
-    o.value = c;
-    dl.appendChild(o);
-  });
-
-  // SSD locked per platform
+  const dl = $('cpuList'); dl.innerHTML = '';
+  platform.cpuSuggestions.forEach((c) => { const o = document.createElement('option'); o.value = c; dl.appendChild(o); });
   $('ssd').value = platform.ssd;
+  updateBuildLabel();
+}
 
-  updatePreview();
+function currentBuild() {
+  return {
+    computer: state.computer, type: state.type,
+    ram: parseInt($('ram').value, 10),
+    cpu: $('cpu').value.trim() || '(unspecified)',
+    ssd: $('ssd').value,
+    qty: Math.max(1, parseInt($('qty').value, 10) || 1),
+  };
+}
+
+function updateBuildLabel() {
+  const b = currentBuild();
+  $('buildLabel').textContent =
+    'Will add:  ' + b.computer + ' — ' + b.type + '   ·   ' + b.cpu + '   ·   ' + b.ram + ' GB   ·   ' + b.ssd + '   ·   ×' + b.qty;
+}
+
+// ── Cart (multiple devices) ─────────────────────────────────────────────────
+function addDevice() {
+  const b = currentBuild();
+  const match = lineItems.find((it) =>
+    it.computer === b.computer && it.type === b.type && it.ram === b.ram && it.cpu === b.cpu && it.ssd === b.ssd);
+  if (match) match.qty += b.qty; else lineItems.push(b);
+  renderCart(); updatePreview();
+  toast('Added ' + b.computer + ' — ' + b.type + ' ×' + b.qty);
+}
+
+function removeItem(i) { lineItems.splice(i, 1); renderCart(); updatePreview(); }
+
+function renderCart() {
+  const c = $('cart');
+  if (!lineItems.length) {
+    c.innerHTML = '<div class="cart-empty">No devices yet — configure one above and hit “Add this device”. You can mix Mac and ThinkPad in one request.</div>';
+    $('cartTotal').textContent = '';
+    return;
+  }
+  c.innerHTML = '';
+  lineItems.forEach((it, i) => {
+    const row = document.createElement('div'); row.className = 'cart-item';
+    row.innerHTML =
+      '<div class="ci-main"><strong>' + escapeHtml(it.computer + ' — ' + it.type) + '</strong> ' +
+      '<span class="ci-qty">×' + it.qty + '</span>' +
+      '<div class="ci-spec">' + escapeHtml(it.cpu + '  ·  ' + it.ram + ' GB  ·  ' + it.ssd) + '</div></div>' +
+      '<button class="ci-remove" title="Remove">✕</button>';
+    row.querySelector('.ci-remove').addEventListener('click', () => removeItem(i));
+    c.appendChild(row);
+  });
+  const types = lineItems.length, units = lineItems.reduce((s, it) => s + it.qty, 0);
+  $('cartTotal').textContent = types + ' device type' + (types === 1 ? '' : 's') + '  ·  ' + units + ' unit' + (units === 1 ? '' : 's') + ' total';
 }
 
 // ── Email building ──────────────────────────────────────────────────────────
 function selectedVendor() {
-  const sel  = $('vendorSelect');
-  const email = sel.value;
+  const email = $('vendorSelect').value;
   if (!email || email === '__manage__') return null;
-  const list = loadVendors();
-  return list.find((v) => v.email === email) || { name: email, email };
+  return loadVendors().find((v) => v.email === email) || { name: email, email };
 }
 
 function buildEmail() {
-  const v        = selectedVendor();
-  const device   = state.computer + ' — ' + state.type;
-  const qty      = Math.max(1, parseInt($('qty').value, 10) || 1);
-  const cpu      = $('cpu').value.trim() || '(unspecified)';
-  const ram      = $('ram').value + ' GB';
-  const ssd      = $('ssd').value;
-  const notes    = $('notes').value.trim();
-  const reqBy    = $('requester').value.trim();
-  const company  = v ? v.name.replace(/\s*\(edit me\)\s*$/i, '') : 'there';
+  const v = selectedVendor();
+  const company = v ? v.name.replace(/\s*\(edit me\)\s*$/i, '') : 'there';
+  const notes = $('notes').value.trim(), reqBy = $('requester').value.trim();
+  const units = lineItems.reduce((s, it) => s + it.qty, 0);
 
-  const subject = 'Equipment Request — ' + device + (qty > 1 ? ' ×' + qty : '');
+  let subject;
+  if (!lineItems.length)           subject = 'Equipment Request';
+  else if (lineItems.length === 1) subject = 'Equipment Request — ' + lineItems[0].computer + ' — ' + lineItems[0].type + (lineItems[0].qty > 1 ? ' ×' + lineItems[0].qty : '');
+  else                             subject = 'Equipment Request — ' + lineItems.length + ' device types (' + units + ' units)';
 
-  const pad = (s) => (s + '            ').slice(0, 12);
-  const lines = [
-    'Hello ' + company + ',',
-    '',
-    'The Global-e Help Desk team would like to request the following equipment:',
-    '',
-    '  ' + pad('Device')   + ': ' + device,
-    '  ' + pad('Quantity') + ': ' + qty,
-    '  ' + pad('CPU')      + ': ' + cpu,
-    '  ' + pad('RAM')      + ': ' + ram,
-    '  ' + pad('SSD')      + ': ' + ssd,
-  ];
-  if (notes) { lines.push('', 'Notes: ' + notes); }
-  lines.push(
-    '',
-    'Please reply with availability, unit pricing, and estimated lead time.',
-    '',
-    'Thank you,',
-    (reqBy || 'Help Desk Team'),
-    'Global-e Help Desk'
-  );
+  const lines = ['Hello ' + company + ',', '', 'The Global-e Help Desk team would like to request the following equipment:', ''];
+  lineItems.forEach((it, i) => {
+    lines.push('  ' + (i + 1) + '. ' + it.computer + ' — ' + it.type + '   ×' + it.qty);
+    lines.push('        CPU : ' + it.cpu);
+    lines.push('        RAM : ' + it.ram + ' GB');
+    lines.push('        SSD : ' + it.ssd);
+    lines.push('');
+  });
+  if (lineItems.length > 1) { lines.push('  Total: ' + units + ' units across ' + lineItems.length + ' device types.', ''); }
+  if (notes) { lines.push('Notes: ' + notes, ''); }
+  lines.push('Please reply with availability, unit pricing, and estimated lead time.', '', 'Thank you,', (reqBy || 'Help Desk Team'), 'Global-e Help Desk');
 
   return { to: v ? v.email : '', subject, body: lines.join('\r\n') };
 }
@@ -447,104 +428,71 @@ function buildEmail() {
 function updatePreview() {
   const { to, subject, body } = buildEmail();
   const pv = $('preview');
-  pv.innerHTML =
-    '<span class="pv-to">To:      </span>' + escapeHtml(to || '(choose a vendor)') + '\n' +
-    '<span class="pv-subj">Subject: </span>' + escapeHtml(subject) + '\n' +
-    '─────────────────────────────────────\n' +
-    escapeHtml(body);
-
-  const ready = !!to;
-  $('sendBtn').disabled = !ready;
+  if (!lineItems.length) {
+    pv.innerHTML = '<span style="color:#94a3b8">Add at least one device above — the email preview fills in here.</span>';
+  } else {
+    pv.innerHTML =
+      '<span class="pv-to">To:      </span>' + escapeHtml(to || '(choose a vendor)') + '\n' +
+      '<span class="pv-subj">Subject: </span>' + escapeHtml(subject) + '\n' +
+      '─────────────────────────────────────\n' + escapeHtml(body);
+  }
+  $('sendBtn').disabled = !(to && lineItems.length);
 }
 
 function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, (c) =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 // ── Send / copy ───────────────────────────────────────────────────────────
 function sendEmail() {
   const { to, subject, body } = buildEmail();
+  if (!lineItems.length) { toast('Add at least one device first'); return; }
   if (!to) { toast('Pick a vendor first'); return; }
-  const url = 'mailto:' + encodeURIComponent(to) +
-              '?subject=' + encodeURIComponent(subject) +
-              '&body=' + encodeURIComponent(body);
-  window.location.href = url;
+  window.location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
   status('Opening your mail client for ' + to + ' …');
 }
-
 function copyEmail() {
   const { to, subject, body } = buildEmail();
   const text = 'To: ' + to + '\nSubject: ' + subject + '\n\n' + body;
-  navigator.clipboard.writeText(text)
-    .then(() => toast('Email text copied'))
-    .catch(() => toast('Copy failed — select the preview manually'));
+  navigator.clipboard.writeText(text).then(() => toast('Email text copied')).catch(() => toast('Copy failed — select the preview manually'));
 }
 
-// ── New-vendor flow ─────────────────────────────────────────────────────────
+// ── New vendor ────────────────────────────────────────────────────────────
 function openNewVendor()  { $('newVendor').classList.add('open');  $('nvName').focus(); }
 function closeNewVendor() { $('newVendor').classList.remove('open'); $('nvName').value=''; $('nvEmail').value=''; $('nvErr').textContent=''; }
-
 function saveNewVendor() {
-  const name  = $('nvName').value.trim();
-  const email = $('nvEmail').value.trim();
-  if (!name)  { $('nvErr').textContent = 'Company name is required.'; return; }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    $('nvErr').textContent = 'Enter a valid email (name@domain.com).'; return;
-  }
+  const name = $('nvName').value.trim(), email = $('nvEmail').value.trim();
+  if (!name) { $('nvErr').textContent = 'Company name is required.'; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { $('nvErr').textContent = 'Enter a valid email (name@domain.com).'; return; }
   const list = loadVendors();
-  if (list.some((v) => v.email.toLowerCase() === email.toLowerCase())) {
-    $('nvErr').textContent = 'A vendor with that email already exists.'; return;
-  }
-  list.push({ name, email });
-  saveVendors(list);
-  closeNewVendor();
-  renderVendors(email);          // select the newly-added vendor
-  toast('Vendor saved');
+  if (list.some((v) => v.email.toLowerCase() === email.toLowerCase())) { $('nvErr').textContent = 'A vendor with that email already exists.'; return; }
+  list.push({ name, email }); saveVendors(list); closeNewVendor(); renderVendors(email); toast('Vendor saved');
 }
-
 function manageRemove() {
-  const list = loadVendors();
-  if (!list.length) { renderVendors(); return; }
+  const list = loadVendors(); if (!list.length) { renderVendors(); return; }
   const labels = list.map((v, i) => (i + 1) + '. ' + v.name + ' (' + v.email + ')').join('\n');
   const pick = prompt('Remove which vendor? Enter its number:\n\n' + labels);
-  const idx  = parseInt(pick, 10) - 1;
-  if (idx >= 0 && idx < list.length) {
-    const removed = list.splice(idx, 1)[0];
-    saveVendors(list);
-    toast('Removed ' + removed.name);
-  }
+  const idx = parseInt(pick, 10) - 1;
+  if (idx >= 0 && idx < list.length) { const r = list.splice(idx, 1)[0]; saveVendors(list); toast('Removed ' + r.name); }
   renderVendors();
 }
 
 // ── Toast / status ────────────────────────────────────────────────────────
 let toastTimer = null;
-function toast(msg) {
-  const el = $('toast'); el.textContent = msg; el.classList.add('show');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
-}
+function toast(msg) { const el = $('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2200); }
 function status(msg) { $('status').textContent = msg || ''; }
 
 // ── Wire up ─────────────────────────────────────────────────────────────────
 $('computerSeg').addEventListener('click', (e) => {
-  const b = e.target.closest('button[data-computer]');
-  if (!b) return;
-  state.computer = b.dataset.computer;
-  state.type = null; // reset; buildTypeSeg picks the first valid one
+  const b = e.target.closest('button[data-computer]'); if (!b) return;
+  state.computer = b.dataset.computer; state.type = null;
   $('computerSeg').querySelectorAll('button').forEach((x) => x.classList.remove('active'));
-  b.classList.add('active');
-  buildTypeSeg();
-  applyRules();
+  b.classList.add('active'); buildTypeSeg(); applyRules();
 });
-
-['ram', 'cpu', 'qty', 'notes', 'requester'].forEach((id) =>
-  $(id).addEventListener('input', updatePreview));
-
-$('vendorSelect').addEventListener('change', (e) => {
-  if (e.target.value === '__manage__') { manageRemove(); return; }
-  updatePreview();
-});
-
+['ram', 'cpu', 'qty'].forEach((id) => $(id).addEventListener('input', updateBuildLabel));
+['notes', 'requester'].forEach((id) => $(id).addEventListener('input', updatePreview));
+$('addBtn').addEventListener('click', addDevice);
+$('vendorSelect').addEventListener('change', (e) => { if (e.target.value === '__manage__') manageRemove(); else updatePreview(); });
 $('addVendorBtn').addEventListener('click', openNewVendor);
 $('nvCancel').addEventListener('click', closeNewVendor);
 $('nvSave').addEventListener('click', saveNewVendor);
@@ -553,9 +501,7 @@ $('sendBtn').addEventListener('click', sendEmail);
 $('copyBtn').addEventListener('click', copyEmail);
 
 // Init
-buildTypeSeg();
-applyRules();
-renderVendors();
+buildTypeSeg(); applyRules(); renderCart(); renderVendors();
 </script>
 </body>
 </html>
