@@ -83,6 +83,19 @@
 
   .hint { font-size: 0.68rem; color: #9ca3af; font-weight: 500; text-transform: none; letter-spacing: 0; }
 
+  .cpu-row { display: flex; gap: 6px; }
+  .cpu-row input { flex: 1; }
+  .btn-cpu-add {
+    background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe;
+    border-radius: 10px; padding: 0 13px; font: inherit; font-size: 1rem; font-weight: 800;
+    cursor: pointer; flex-shrink: 0; transition: background .15s;
+  }
+  .btn-cpu-add:hover { background: #e0e7ff; }
+  .cpu-manage {
+    font-size: 0.66rem; color: #6366f1; cursor: pointer; text-decoration: underline;
+    text-transform: none; letter-spacing: 0; font-weight: 600; margin-top: 4px; align-self: flex-start;
+  }
+
   /* Add-device button + build label */
   .build-label {
     font-size: 0.74rem; color: #6b7280; margin-top: 14px;
@@ -201,7 +214,14 @@
       </label>
 
       <label>RAM <select id="ram"></select></label>
-      <label>CPU <input id="cpu" list="cpuList" autocomplete="off"/><datalist id="cpuList"></datalist></label>
+      <label>CPU
+        <div class="cpu-row">
+          <input id="cpu" list="cpuList" autocomplete="off" placeholder="Type or pick a model"/>
+          <button type="button" class="btn-cpu-add" id="cpuAdd" title="Save this CPU model to the list">➕</button>
+        </div>
+        <datalist id="cpuList"></datalist>
+        <span class="cpu-manage" id="cpuManage" style="display:none;"></span>
+      </label>
       <label>SSD <input id="ssd" readonly/></label>
       <label>Quantity <input id="qty" type="number" min="1" max="500" value="1"/></label>
     </div>
@@ -282,9 +302,57 @@ const SPEC = {
 };
 
 const VENDOR_KEY = 'vendor_hd_portal_vendors_v1';
+const CPU_KEY    = 'vendor_hd_portal_cpus_v1';
 const state = { computer: 'Mac', type: 'Regular' };   // current configurator
 let lineItems = [];                                    // the request (cart)
 const $ = (id) => document.getElementById(id);
+
+// ── Custom CPU models (persisted per platform) ──────────────────────────────
+function loadCpus() {
+  try { const raw = localStorage.getItem(CPU_KEY); if (raw) return JSON.parse(raw); } catch (_) {}
+  return { Mac: [], ThinkPad: [] };
+}
+function saveCpus(obj) { try { localStorage.setItem(CPU_KEY, JSON.stringify(obj)); } catch (_) {} }
+
+// Rebuilds the CPU datalist (built-in suggestions + saved customs) WITHOUT
+// touching the input value, so it's safe to call after saving a model.
+function rebuildCpuList() {
+  const platform = SPEC[state.computer];
+  const customs  = (loadCpus()[state.computer] || []);
+  const seen = {}, all = [];
+  platform.cpuSuggestions.concat(customs).forEach((c) => {
+    const k = c.toLowerCase(); if (!seen[k]) { seen[k] = 1; all.push(c); }
+  });
+  const dl = $('cpuList'); dl.innerHTML = '';
+  all.forEach((c) => { const o = document.createElement('option'); o.value = c; dl.appendChild(o); });
+  const mng = $('cpuManage');
+  if (customs.length) { mng.style.display = 'inline-block'; mng.textContent = '⚙ Manage saved CPU models (' + customs.length + ')'; }
+  else { mng.style.display = 'none'; }
+}
+
+function cpuAddCurrent() {
+  const model = $('cpu').value.trim();
+  if (!model) { toast('Type a CPU model first'); return; }
+  const builtins = SPEC[state.computer].cpuSuggestions.map((c) => c.toLowerCase());
+  const all = loadCpus();
+  const arr = all[state.computer] || (all[state.computer] = []);
+  if (builtins.includes(model.toLowerCase()) || arr.some((c) => c.toLowerCase() === model.toLowerCase())) {
+    toast('“' + model + '” is already in the list'); return;
+  }
+  arr.push(model); saveCpus(all);
+  rebuildCpuList();              // refresh suggestions (keeps the typed value)
+  toast('Saved “' + model + '” for ' + state.computer);
+}
+
+function cpuManageRemove() {
+  const all = loadCpus();
+  const arr = all[state.computer] || [];
+  if (!arr.length) return;
+  const labels = arr.map((c, i) => (i + 1) + '. ' + c).join('\n');
+  const pick = prompt('Remove which saved CPU model for ' + state.computer + '?\nEnter its number:\n\n' + labels);
+  const idx = parseInt(pick, 10) - 1;
+  if (idx >= 0 && idx < arr.length) { const r = arr.splice(idx, 1)[0]; saveCpus(all); rebuildCpuList(); toast('Removed ' + r); }
+}
 
 // ── Vendors ─────────────────────────────────────────────────────────────────
 function loadVendors() {
@@ -336,8 +404,7 @@ function applyRules() {
     if (r === rule.ramDefault) o.selected = true; ramSel.appendChild(o);
   });
   $('cpu').value = rule.cpu;
-  const dl = $('cpuList'); dl.innerHTML = '';
-  platform.cpuSuggestions.forEach((c) => { const o = document.createElement('option'); o.value = c; dl.appendChild(o); });
+  rebuildCpuList();
   $('ssd').value = platform.ssd;
   updateBuildLabel();
 }
@@ -491,6 +558,9 @@ $('computerSeg').addEventListener('click', (e) => {
 });
 ['ram', 'cpu', 'qty'].forEach((id) => $(id).addEventListener('input', updateBuildLabel));
 ['notes', 'requester'].forEach((id) => $(id).addEventListener('input', updatePreview));
+$('cpuAdd').addEventListener('click', cpuAddCurrent);
+$('cpuManage').addEventListener('click', cpuManageRemove);
+$('cpu').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); cpuAddCurrent(); } });
 $('addBtn').addEventListener('click', addDevice);
 $('vendorSelect').addEventListener('change', (e) => { if (e.target.value === '__manage__') manageRemove(); else updatePreview(); });
 $('addVendorBtn').addEventListener('click', openNewVendor);
